@@ -1,4 +1,8 @@
+#[macro_use]
+extern crate lazy_static;
+
 use failure::{self, Error, Fail};
+use regex::RegexSet;
 use std::fs;
 use std::io;
 use std::path::PathBuf;
@@ -93,9 +97,25 @@ const LSBSYSINIT_SUFFIX_TO_IGNORE: [&str; 4] = [
     ".dpkg-old", ".dpkg-dist", ".dpkg-new", ".dpkg-tmp"
 ];
 
+lazy_static! {
+    static ref LSBSYSINIT_REGEX_TO_ACCEPT: RegexSet = RegexSet::new(&[
+        r"^[a-z0-9]+$",                     // LANANA-assigned LSB hierarchical
+        r"^_?([a-z0-9_.]+-)+[a-z0-9]+$",    // LANANA-assigned LSB reserved
+        r"^[a-zA-Z0-9_-]+$"                 // Debian cron script namespaces
+    ]).unwrap();
+}
+
 fn filter_filename(opt: &Opt, file_name: &str) -> bool {
     if STD_SUFFIX_TO_IGNORE.iter().find(|&x| file_name.ends_with(x)).is_some() {
         return false
+    }
+    if opt.lsbsysinit {
+        if LSBSYSINIT_SUFFIX_TO_IGNORE.iter().find(|&x| file_name.ends_with(x)).is_some() {
+            return false
+        }
+        if !LSBSYSINIT_REGEX_TO_ACCEPT.is_match(file_name) {
+            return false
+        }
     }
     true
 }
