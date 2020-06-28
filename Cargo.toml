@@ -3,6 +3,9 @@ name = "run-parts"
 version = "0.1.0"
 authors = ["Illya Kysil <ikysil@ikysil.name>"]
 edition = "2018"
+description = "Run scripts or programs in a directory"
+license = "Apache-2.0"
+categories = ["command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
