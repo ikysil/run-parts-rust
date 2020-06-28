@@ -2,7 +2,7 @@
 extern crate lazy_static;
 
 use failure::{self, Error, Fail};
-use regex::RegexSet;
+use regex::{Regex, RegexSet};
 use std::fs;
 use std::io;
 use std::path::PathBuf;
@@ -53,7 +53,7 @@ struct Opt {
 
     /// validate filenames against custom extended regular expression REGEX.
     #[structopt(long)]
-    regex: Option<String>,
+    regex: Option<Regex>,
 
     /// pass argument to the scripts.  Use --arg once for each argument you want passed.
     #[structopt(short = "a", long)]
@@ -117,6 +117,11 @@ fn filter_filename(opt: &Opt, file_name: &str) -> bool {
             return false
         }
     }
+    if let Some(regex) = &opt.regex {
+        if !regex.is_match(file_name) {
+            return false
+        }
+    }
     true
 }
 
@@ -126,9 +131,10 @@ fn filter_file(opt: &Opt, fp: &PathBuf) -> bool {
     if metadata.is_dir() {
         return false
     }
-    match fp.file_name() {
-        Some(file_name) => filter_filename(opt, &file_name.to_str().expect("cannot get file name")),
-        None => false
+    if let Some(file_name) = fp.file_name().map(|x| x.to_str()) {
+        return filter_filename(opt, &file_name.expect("cannot get file name"))
+    } else {
+        false
     }
 }
 
