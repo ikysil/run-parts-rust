@@ -69,3 +69,7 @@ Rust implementation of `run-parts` - concept taken from [Debian](http://www.unix
 
            -h, --help
               display usage information and exit.
+
+# Useful Links
+
+* [Command Line Applications in Rust](https://rust-cli.github.io/book/index.html)
