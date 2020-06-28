@@ -63,6 +63,23 @@ struct Opt {
     dir: PathBuf,
 }
 
+struct Status {
+
+    pub exit_code: exitcode::ExitCode,
+}
+
+impl Status {
+
+    pub fn new() -> Status {
+        Status { exit_code: exitcode::OK }
+    }
+
+    fn reset(&mut self) {
+        self.exit_code = exitcode::OK;
+    }
+
+}
+
 fn usage_error(s: &str) {
     eprintln!("{}", s);
     eprintln!("");
@@ -138,13 +155,25 @@ fn filter_file(opt: &Opt, fp: &PathBuf) -> bool {
     }
 }
 
-fn run(opt: &Opt) -> Result<(), Error> {
+fn act_on_file(opt: &Opt, fp: &PathBuf, status: &mut Status) {
+    if opt.exit_on_error && status.exit_code != exitcode::OK {
+        return
+    }
+    status.reset();
+    if opt.list {
+        println!("{} {}", &fp.to_str().unwrap(), &opt.arg.join(" "));
+        return
+    }
+}
+
+fn run(opt: &Opt) -> Result<Status, Error> {
     let files = find_files(opt, &opt.dir)?;
     let files_to_process: Vec<&PathBuf> = files.iter().filter(|fp| filter_file(opt, fp)).collect();
+    let mut status: Status = Status::new();
     for entry in files_to_process {
-        println!("file: {:?}", &entry);
+        act_on_file(opt, &entry, &mut status);
     }
-    Ok(())
+    Ok(status)
 }
 
 fn main() {
@@ -154,7 +183,7 @@ fn main() {
         usage_error("--list and --test cannot be used together");
     }
     match run(&opt) {
-        Ok(_) => process::exit(exitcode::OK),
+        Ok(status) => process::exit(status.exit_code),
         Err(e) => {
             eprintln!("{}", e);
             process::exit(exitcode::SOFTWARE);
