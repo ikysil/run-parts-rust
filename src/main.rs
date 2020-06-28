@@ -207,9 +207,18 @@ fn run(opt: &Opt) -> Result<Status, Error> {
     Ok(status)
 }
 
+#[cfg(debug_assertions)]
+fn debug_options(opt: &Opt) {
+    dbg!("{:#?}", &opt);
+}
+
+#[cfg(not(debug_assertions))]
+fn debug_options(opt: &Opt) {
+}
+
 fn main() {
     let opt = Opt::from_args();
-    println!("{:#?}", opt);
+    debug_options(&opt);
     if opt.list && opt.test {
         usage_error("--list and --test cannot be used together");
     }
