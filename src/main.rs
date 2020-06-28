@@ -69,7 +69,7 @@ fn usage_error(s: &str) {
     process::exit(exitcode::USAGE)
 }
 
-fn find_files(opt: &Opt, dir: &PathBuf) -> Result<Vec<PathBuf>, Error>{
+fn find_files(opt: &Opt, dir: &PathBuf) -> Result<Vec<PathBuf>, Error> {
     let mut result: Vec<PathBuf> = [].to_vec();
     for entry in fs::read_dir(dir)? {
         let entry = entry?;
@@ -82,9 +82,40 @@ fn find_files(opt: &Opt, dir: &PathBuf) -> Result<Vec<PathBuf>, Error>{
     Ok(result)
 }
 
+const STD_SUFFIX_TO_IGNORE: [&str; 9] = [
+    "~", ",",
+    ".disabled", ".cfsaved",
+    ".rpmsave", ".rpmorig", ".rpmnew",
+    ".swp", ",v"
+];
+
+const LSBSYSINIT_SUFFIX_TO_IGNORE: [&str; 4] = [
+    ".dpkg-old", ".dpkg-dist", ".dpkg-new", ".dpkg-tmp"
+];
+
+fn filter_filename(opt: &Opt, file_name: &str) -> bool {
+    if STD_SUFFIX_TO_IGNORE.iter().find(|&x| file_name.ends_with(x)).is_some() {
+        return false
+    }
+    true
+}
+
+fn filter_file(opt: &Opt, fp: &PathBuf) -> bool {
+    let f = fs::File::open(fp).expect("open file failed");
+    let metadata = f.metadata().expect("metadata failed");
+    if metadata.is_dir() {
+        return false
+    }
+    match fp.file_name() {
+        Some(file_name) => filter_filename(opt, &file_name.to_str().expect("cannot get file name")),
+        None => false
+    }
+}
+
 fn run(opt: &Opt) -> Result<(), Error> {
     let files = find_files(opt, &opt.dir)?;
-    for entry in files {
+    let files_to_process: Vec<&PathBuf> = files.iter().filter(|fp| filter_file(opt, fp)).collect();
+    for entry in files_to_process {
         println!("file: {:?}", &entry);
     }
     Ok(())
