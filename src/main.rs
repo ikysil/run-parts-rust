@@ -170,6 +170,15 @@ fn act_on_file(opt: &Opt, fp: &PathBuf, status: &mut Status) {
         println!("{} {}", &fp.to_str().unwrap(), &opt.arg.join(" "));
         return
     }
+    // TODO - implement random sleep
+    if opt.verbose {
+        eprintln!("{} {}", &fp.to_str().unwrap(), &opt.arg.join(" "));
+    }
+    // TODO - implement umask
+    // TODO - execute
+    if opt.verbose {
+        eprintln!("{} {} exit status {}", &fp.to_str().unwrap(), &opt.arg.join(" "), status.exit_code);
+    }
 }
 
 fn run(opt: &Opt) -> Result<Status, Error> {
