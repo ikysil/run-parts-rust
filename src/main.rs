@@ -65,20 +65,19 @@ struct Opt {
 }
 
 struct Status {
-
     pub exit_code: exitcode::ExitCode,
 }
 
 impl Status {
-
     pub fn new() -> Status {
-        Status { exit_code: exitcode::OK }
+        Status {
+            exit_code: exitcode::OK,
+        }
     }
 
     fn reset(&mut self) {
         self.exit_code = exitcode::OK;
     }
-
 }
 
 fn usage_error(s: &str) {
@@ -105,15 +104,19 @@ fn find_files(opt: &Opt, dir: &PathBuf) -> Result<Vec<PathBuf>, Error> {
 }
 
 const STD_SUFFIX_TO_IGNORE: [&str; 9] = [
-    "~", ",",
-    ".disabled", ".cfsaved",
-    ".rpmsave", ".rpmorig", ".rpmnew",
-    ".swp", ",v"
+    "~",
+    ",",
+    ".disabled",
+    ".cfsaved",
+    ".rpmsave",
+    ".rpmorig",
+    ".rpmnew",
+    ".swp",
+    ",v",
 ];
 
-const LSBSYSINIT_SUFFIX_TO_IGNORE: [&str; 4] = [
-    ".dpkg-old", ".dpkg-dist", ".dpkg-new", ".dpkg-tmp"
-];
+const LSBSYSINIT_SUFFIX_TO_IGNORE: [&str; 4] =
+    [".dpkg-old", ".dpkg-dist", ".dpkg-new", ".dpkg-tmp"];
 
 lazy_static! {
     static ref LSBSYSINIT_REGEX_TO_ACCEPT: RegexSet = RegexSet::new(&[
@@ -124,20 +127,28 @@ lazy_static! {
 }
 
 fn filter_filename(opt: &Opt, file_name: &str) -> bool {
-    if STD_SUFFIX_TO_IGNORE.iter().find(|&x| file_name.ends_with(x)).is_some() {
-        return false
+    if STD_SUFFIX_TO_IGNORE
+        .iter()
+        .find(|&x| file_name.ends_with(x))
+        .is_some()
+    {
+        return false;
     }
     if opt.lsbsysinit {
-        if LSBSYSINIT_SUFFIX_TO_IGNORE.iter().find(|&x| file_name.ends_with(x)).is_some() {
-            return false
+        if LSBSYSINIT_SUFFIX_TO_IGNORE
+            .iter()
+            .find(|&x| file_name.ends_with(x))
+            .is_some()
+        {
+            return false;
         }
         if !LSBSYSINIT_REGEX_TO_ACCEPT.is_match(file_name) {
-            return false
+            return false;
         }
     }
     if let Some(regex) = &opt.regex {
         if !regex.is_match(file_name) {
-            return false
+            return false;
         }
     }
     true
@@ -145,10 +156,10 @@ fn filter_filename(opt: &Opt, file_name: &str) -> bool {
 
 fn filter_file(opt: &Opt, fp: &PathBuf) -> bool {
     if fp.as_path().is_dir() {
-        return false
+        return false;
     }
     if let Some(file_name) = fp.file_name().map(|x| x.to_str()) {
-        return filter_filename(opt, &file_name.expect("cannot get file name"))
+        return filter_filename(opt, &file_name.expect("cannot get file name"));
     } else {
         false
     }
@@ -156,19 +167,19 @@ fn filter_file(opt: &Opt, fp: &PathBuf) -> bool {
 
 fn act_on_file(opt: &Opt, fp: &PathBuf, status: &mut Status) {
     if opt.exit_on_error && status.exit_code != exitcode::OK {
-        return
+        return;
     }
     status.reset();
     if opt.list {
         println!("{} {}", &fp.to_str().unwrap(), &opt.arg.join(" "));
-        return
+        return;
     }
     if !fp.as_path().is_executable() {
-        return
+        return;
     }
     if opt.test {
         println!("{} {}", &fp.to_str().unwrap(), &opt.arg.join(" "));
-        return
+        return;
     }
     // TODO - implement random sleep
     if opt.verbose {
@@ -177,7 +188,12 @@ fn act_on_file(opt: &Opt, fp: &PathBuf, status: &mut Status) {
     // TODO - implement umask
     // TODO - execute
     if opt.verbose {
-        eprintln!("{} {} exit status {}", &fp.to_str().unwrap(), &opt.arg.join(" "), status.exit_code);
+        eprintln!(
+            "{} {} exit status {}",
+            &fp.to_str().unwrap(),
+            &opt.arg.join(" "),
+            status.exit_code
+        );
     }
 }
 
