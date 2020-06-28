@@ -2,6 +2,7 @@
 extern crate lazy_static;
 
 use failure::{self, Error, Fail};
+use is_executable::IsExecutable;
 use regex::{Regex, RegexSet};
 use std::fs;
 use std::io;
@@ -143,9 +144,7 @@ fn filter_filename(opt: &Opt, file_name: &str) -> bool {
 }
 
 fn filter_file(opt: &Opt, fp: &PathBuf) -> bool {
-    let f = fs::File::open(fp).expect("open file failed");
-    let metadata = f.metadata().expect("metadata failed");
-    if metadata.is_dir() {
+    if fp.as_path().is_dir() {
         return false
     }
     if let Some(file_name) = fp.file_name().map(|x| x.to_str()) {
@@ -161,6 +160,13 @@ fn act_on_file(opt: &Opt, fp: &PathBuf, status: &mut Status) {
     }
     status.reset();
     if opt.list {
+        println!("{} {}", &fp.to_str().unwrap(), &opt.arg.join(" "));
+        return
+    }
+    if !fp.as_path().is_executable() {
+        return
+    }
+    if opt.test {
         println!("{} {}", &fp.to_str().unwrap(), &opt.arg.join(" "));
         return
     }
