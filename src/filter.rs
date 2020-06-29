@@ -28,10 +28,7 @@ lazy_static::lazy_static! {
 }
 
 fn filter_filename(opt: &Opt, file_name: &str) -> bool {
-    if STD_SUFFIX_TO_IGNORE
-        .iter()
-        .any(|&x| file_name.ends_with(x))
-    {
+    if STD_SUFFIX_TO_IGNORE.iter().any(|&x| file_name.ends_with(x)) {
         return false;
     }
     if opt.lsbsysinit {
