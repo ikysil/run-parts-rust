@@ -59,7 +59,7 @@ fn act_on_file(opt: &Opt, fp: &PathBuf, status: &mut Status) {
 fn run(opt: &Opt) -> Result<Status, Error> {
     let files = find_files(opt, &opt.dir)?;
     let files_to_process: Vec<&PathBuf> = files.iter().filter(|fp| filter_file(opt, fp)).collect();
-    let mut status: Status = Status::new();
+    let mut status: Status = Status::default();
     for entry in files_to_process {
         act_on_file(opt, &entry, &mut status);
     }

@@ -27,7 +27,7 @@ pub fn exec(opt: &Opt, fp: &PathBuf, status: &mut Status) -> Result<(), Error> {
             let _ = done_sender.write_all(&[exit_code]);
         }
         Err(e) => {
-            let _ = write!(done_sender, "Error: {:?}\n", e);
+            let _ = writeln!(done_sender, "Error: {:?}", e);
         }
     });
 
@@ -59,7 +59,7 @@ pub fn exec(opt: &Opt, fp: &PathBuf, status: &mut Status) -> Result<(), Error> {
 fn write(w: &mut dyn Write, data: &[u8], report: Option<&String>) {
     if let Some(report) = report {
         w.write_all(report.as_bytes()).unwrap();
-        w.write_all("\n".as_bytes()).unwrap();
+        w.write_all(b"\n").unwrap();
     }
     w.write_all(data).unwrap();
 }

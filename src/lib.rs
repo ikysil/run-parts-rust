@@ -81,17 +81,12 @@ impl Opt {
     pub fn debug_options(self: &Self) {}
 }
 
+#[derive(Default)]
 pub struct Status {
     pub exit_code: exitcode::ExitCode,
 }
 
 impl Status {
-    pub fn new() -> Status {
-        Status {
-            exit_code: exitcode::OK,
-        }
-    }
-
     pub fn reset(&mut self) {
         self.exit_code = exitcode::OK;
     }

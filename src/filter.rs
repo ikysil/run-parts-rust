@@ -30,16 +30,14 @@ lazy_static::lazy_static! {
 fn filter_filename(opt: &Opt, file_name: &str) -> bool {
     if STD_SUFFIX_TO_IGNORE
         .iter()
-        .find(|&x| file_name.ends_with(x))
-        .is_some()
+        .any(|&x| file_name.ends_with(x))
     {
         return false;
     }
     if opt.lsbsysinit {
         if LSBSYSINIT_SUFFIX_TO_IGNORE
             .iter()
-            .find(|&x| file_name.ends_with(x))
-            .is_some()
+            .any(|&x| file_name.ends_with(x))
         {
             return false;
         }
@@ -60,7 +58,7 @@ pub fn filter_file(opt: &Opt, fp: &PathBuf) -> bool {
         return false;
     }
     if let Some(file_name) = fp.file_name().map(|x| x.to_str()) {
-        return filter_filename(opt, &file_name.expect("cannot get file name"));
+        filter_filename(opt, &file_name.expect("cannot get file name"))
     } else {
         false
     }
