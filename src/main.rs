@@ -7,9 +7,9 @@ use std::process;
 use std::result::Result;
 use structopt::StructOpt;
 
-use run_parts::*;
 use run_parts::exec::*;
 use run_parts::filter::*;
+use run_parts::*;
 
 fn find_files(opt: &Opt, dir: &PathBuf) -> Result<Vec<PathBuf>, Error> {
     let mut result: Vec<PathBuf> = [].to_vec();

@@ -5,8 +5,8 @@ use std::io;
 use std::path::PathBuf;
 use std::process;
 
-pub mod filter;
 pub mod exec;
+pub mod filter;
 
 /// run scripts or programs in a directory
 #[derive(StructOpt, Debug)]
@@ -62,7 +62,6 @@ pub struct Opt {
 }
 
 impl Opt {
-
     pub fn usage_error(self: &Self, s: &str) {
         eprintln!("{}", s);
         eprintln!("");
@@ -79,9 +78,7 @@ impl Opt {
     }
 
     #[cfg(not(debug_assertions))]
-    pub fn debug_options(self: &Self) {
-    }
-
+    pub fn debug_options(self: &Self) {}
 }
 
 pub struct Status {
@@ -104,7 +101,7 @@ pub struct Report {
     report_string: String,
     report: bool,
     verbose: bool,
-    used: bool
+    used: bool,
 }
 
 impl Report {
@@ -136,5 +133,4 @@ impl Report {
     pub fn err_report(self: &mut Self) -> Option<&String> {
         self.get_report(self.report && !self.verbose)
     }
-
 }

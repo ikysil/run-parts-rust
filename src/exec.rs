@@ -43,18 +43,14 @@ pub fn exec(opt: &Opt, fp: &PathBuf, status: &mut Status) -> Result<(), Error> {
             (Some("d"), &[exit_code]) => {
                 status.exit_code = exit_code as i32;
                 break;
-            },
+            }
             (Some("d"), error) => {
                 std::io::stderr().write_all(error)?;
                 status.exit_code = exitcode::SOFTWARE;
                 break;
             }
-            (None, _) => {
-                write(&mut stdout, data, report.out_report())
-            },
-            (_, _) => {
-                write(&mut stderr, data, report.err_report())
-            },
+            (None, _) => write(&mut stdout, data, report.out_report()),
+            (_, _) => write(&mut stderr, data, report.err_report()),
         }
     }
     Ok(())
