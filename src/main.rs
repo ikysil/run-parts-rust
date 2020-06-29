@@ -68,9 +68,9 @@ fn run(opt: &Opt) -> Result<Status, Error> {
 
 fn main() {
     let opt = Opt::from_args();
-    debug_options(&opt);
+    opt.debug_options();
     if opt.list && opt.test {
-        usage_error("--list and --test cannot be used together");
+        opt.usage_error("--list and --test cannot be used together");
     }
     match run(&opt) {
         Ok(status) => process::exit(status.exit_code),

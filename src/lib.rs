@@ -61,23 +61,27 @@ pub struct Opt {
     pub dir: PathBuf,
 }
 
-pub fn usage_error(s: &str) {
-    eprintln!("{}", s);
-    eprintln!("");
-    let app = Opt::clap();
-    let mut out = io::stderr();
-    app.write_help(&mut out).expect("failed to write to stderr");
-    eprintln!("");
-    process::exit(exitcode::USAGE)
-}
+impl Opt {
 
-#[cfg(debug_assertions)]
-pub fn debug_options(opt: &Opt) {
-    dbg!("{:#?}", &opt);
-}
+    pub fn usage_error(self: &Self, s: &str) {
+        eprintln!("{}", s);
+        eprintln!("");
+        let app = Self::clap();
+        let mut out = io::stderr();
+        app.write_help(&mut out).expect("failed to write to stderr");
+        eprintln!("");
+        process::exit(exitcode::USAGE)
+    }
 
-#[cfg(not(debug_assertions))]
-pub fn debug_options(_opt: &Opt) {
+    #[cfg(debug_assertions)]
+    pub fn debug_options(self: &Self) {
+        dbg!("{:#?}", &self);
+    }
+
+    #[cfg(not(debug_assertions))]
+    pub fn debug_options(self: &Self) {
+    }
+
 }
 
 pub struct Status {
