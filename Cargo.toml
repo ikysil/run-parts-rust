@@ -6,6 +6,8 @@ edition = "2018"
 description = "Run scripts or programs in a directory"
 license = "Apache-2.0"
 categories = ["command-line-utilities"]
+repository = "https://github.com/ikysil/run-parts-rust"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
