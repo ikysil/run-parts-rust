@@ -1,6 +1,6 @@
 [package]
 name = "run-parts"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Illya Kysil <ikysil@ikysil.name>"]
 edition = "2018"
 description = "Run scripts or programs in a directory"
