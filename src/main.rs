@@ -42,15 +42,18 @@ fn act_on_file(opt: &Opt, fp: &PathBuf, status: &mut Status) {
     }
     // TODO - implement random sleep
     if opt.verbose {
-        eprintln!("{} {}", &fp.to_str().unwrap(), &opt.arg.join(" "));
+        eprintln!(
+            "run-parts: executing {} {}",
+            &fp.to_str().unwrap(),
+            &opt.arg.join(" ")
+        );
     }
     // TODO - implement umask
     exec(opt, fp, status).unwrap();
-    if opt.verbose {
+    if (opt.report || opt.verbose) && status.exit_code != exitcode::OK {
         eprintln!(
-            "{} {} exit status {}",
+            "run-parts: {} exited with return code {}",
             &fp.to_str().unwrap(),
-            &opt.arg.join(" "),
             status.exit_code
         );
     }

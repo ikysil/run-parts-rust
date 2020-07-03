@@ -59,7 +59,7 @@ pub fn exec(opt: &Opt, fp: &PathBuf, status: &mut Status) -> Result<(), Error> {
 fn write(w: &mut dyn Write, data: &[u8], report: Option<&String>) {
     if let Some(report) = report {
         w.write_all(report.as_bytes()).unwrap();
-        w.write_all(b"\n").unwrap();
+        w.write_all(b":\n").unwrap();
     }
     w.write_all(data).unwrap();
 }
