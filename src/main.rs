@@ -1,3 +1,4 @@
+use std::path::Path;
 use failure::{self, Error};
 use is_executable::IsExecutable;
 
@@ -11,7 +12,7 @@ use run_parts::exec::*;
 use run_parts::filter::*;
 use run_parts::*;
 
-fn find_files(opt: &Opt, dir: &PathBuf) -> Result<Vec<PathBuf>, Error> {
+fn find_files(opt: &Opt, dir: &Path) -> Result<Vec<PathBuf>, Error> {
     let mut result: Vec<PathBuf> = [].to_vec();
     for entry in fs::read_dir(dir)? {
         let entry = entry?;
@@ -24,7 +25,7 @@ fn find_files(opt: &Opt, dir: &PathBuf) -> Result<Vec<PathBuf>, Error> {
     Ok(result)
 }
 
-fn act_on_file(opt: &Opt, fp: &PathBuf, status: &mut Status) {
+fn act_on_file(opt: &Opt, fp: &Path, status: &mut Status) {
     if opt.exit_on_error && status.exit_code != exitcode::OK {
         return;
     }
@@ -33,7 +34,7 @@ fn act_on_file(opt: &Opt, fp: &PathBuf, status: &mut Status) {
         println!("{} {}", &fp.to_str().unwrap(), &opt.arg.join(" "));
         return;
     }
-    if !fp.as_path().is_executable() {
+    if !fp.is_executable() {
         return;
     }
     if opt.test {
@@ -64,7 +65,7 @@ fn run(opt: &Opt) -> Result<Status, Error> {
     let files_to_process: Vec<&PathBuf> = files.iter().filter(|fp| filter_file(opt, fp)).collect();
     let mut status: Status = Status::default();
     for entry in files_to_process {
-        act_on_file(opt, &entry, &mut status);
+        act_on_file(opt, entry, &mut status);
     }
     Ok(status)
 }

@@ -1,3 +1,4 @@
+use std::path::Path;
 use regex::Regex;
 use structopt::StructOpt;
 
@@ -62,18 +63,18 @@ pub struct Opt {
 }
 
 impl Opt {
-    pub fn usage_error(self: &Self, s: &str) {
+    pub fn usage_error(&self, s: &str) {
         eprintln!("{}", s);
-        eprintln!("");
+        eprintln!();
         let app = Self::clap();
         let mut out = io::stderr();
         app.write_help(&mut out).expect("failed to write to stderr");
-        eprintln!("");
+        eprintln!();
         process::exit(exitcode::USAGE)
     }
 
     #[cfg(debug_assertions)]
-    pub fn debug_options(self: &Self) {
+    pub fn debug_options(&self) {
         dbg!("{:#?}", &self);
     }
 
@@ -100,7 +101,7 @@ pub struct Report {
 }
 
 impl Report {
-    pub fn new(opt: &Opt, fp: &PathBuf) -> Report {
+    pub fn new(opt: &Opt, fp: &Path) -> Report {
         Report {
             report_string: String::from(fp.to_str().expect("cannot get file path")),
             report: opt.report,
@@ -109,7 +110,7 @@ impl Report {
         }
     }
 
-    fn get_report(self: &mut Self, condition: bool) -> Option<&String> {
+    fn get_report(&mut self, condition: bool) -> Option<&String> {
         if self.used {
             return None;
         }
@@ -121,11 +122,11 @@ impl Report {
         }
     }
 
-    pub fn out_report(self: &mut Self) -> Option<&String> {
+    pub fn out_report(&mut self) -> Option<&String> {
         self.get_report(self.report)
     }
 
-    pub fn err_report(self: &mut Self) -> Option<&String> {
+    pub fn err_report(&mut self) -> Option<&String> {
         self.get_report(self.report && !self.verbose)
     }
 }

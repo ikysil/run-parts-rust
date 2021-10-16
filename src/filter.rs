@@ -1,6 +1,5 @@
+use std::path::Path;
 use regex::RegexSet;
-
-use std::path::PathBuf;
 
 use crate::Opt;
 
@@ -50,12 +49,12 @@ fn filter_filename(opt: &Opt, file_name: &str) -> bool {
     true
 }
 
-pub fn filter_file(opt: &Opt, fp: &PathBuf) -> bool {
-    if fp.as_path().is_dir() {
+pub fn filter_file(opt: &Opt, fp: &Path) -> bool {
+    if fp.is_dir() {
         return false;
     }
     if let Some(file_name) = fp.file_name().map(|x| x.to_str()) {
-        filter_filename(opt, &file_name.expect("cannot get file name"))
+        filter_filename(opt, file_name.expect("cannot get file name"))
     } else {
         false
     }

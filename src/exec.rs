@@ -1,14 +1,14 @@
+use std::path::Path;
 use failure::{self, Error};
 use io_mux::{Mux, TaggedData};
 
 use std::io::{self, Write};
 use std::os::unix::process::ExitStatusExt;
-use std::path::PathBuf;
 use std::process::Command;
 
 use crate::{Opt, Report, Status};
 
-pub fn exec(opt: &Opt, fp: &PathBuf, status: &mut Status) -> Result<(), Error> {
+pub fn exec(opt: &Opt, fp: &Path, status: &mut Status) -> Result<(), Error> {
     let mut mux = Mux::new()?;
     let mut report = Report::new(opt, fp);
     let mut child = Command::new(fp.to_str().unwrap())
