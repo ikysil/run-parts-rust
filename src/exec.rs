@@ -1,9 +1,9 @@
-use std::path::Path;
 use failure::{self, Error};
 use io_mux::{Mux, TaggedData};
 
 use std::io::{self, Write};
 use std::os::unix::process::ExitStatusExt;
+use std::path::Path;
 use std::process::Command;
 
 use crate::{Opt, Report, Status};

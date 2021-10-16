@@ -1,8 +1,8 @@
-use std::path::Path;
 use regex::Regex;
 use structopt::StructOpt;
 
 use std::io;
+use std::path::Path;
 use std::path::PathBuf;
 use std::process;
 

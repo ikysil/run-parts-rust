@@ -1,8 +1,8 @@
-use std::path::Path;
 use failure::{self, Error};
 use is_executable::IsExecutable;
 
 use std::fs;
+use std::path::Path;
 use std::path::PathBuf;
 use std::process;
 use std::result::Result;

@@ -1,5 +1,5 @@
-use std::path::Path;
 use regex::RegexSet;
+use std::path::Path;
 
 use crate::Opt;
 
